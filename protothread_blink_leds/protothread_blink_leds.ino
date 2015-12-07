@@ -29,30 +29,30 @@ void toggleLEDGreen(){
 }
 
 // thread function that blinks the Red LED
-int thread1_LedRed(struct pt *pt, int interval){
+int thread1_LedRed(int interval){
   static unsigned long timestamp_red = 0;
-  PT_BEGIN(pt); // this signifies the start of the thread
+  PT_BEGIN(&pt1); // this signifies the start of the thread
   while(1){
-    PT_WAIT_UNTIL(pt, millis() - timestamp_red > interval); // this will check the 2nd argument, if true it will continue, if false it blocks and go to other thread
+    PT_WAIT_UNTIL(&pt1, millis() - timestamp_red > interval); // this will check the 2nd argument, if true it will continue, if false it blocks and go to other thread
     timestamp_red = millis();
     toggleLEDRed();
   }
-  PT_END(pt); // this signifies the end of the thread
+  PT_END(&pt1); // this signifies the end of the thread
 }
 
-int thread2_LedGreen(struct pt *pt, int interval){
+int thread2_LedGreen(int interval){
   static unsigned long timestamp_green = 0;
-  PT_BEGIN(pt); // this signifies the start of the thread
+  PT_BEGIN(&pt2); // this signifies the start of the thread
   while(1){
-    PT_WAIT_UNTIL(pt, millis() - timestamp_green > interval);
+    PT_WAIT_UNTIL(&pt2, millis() - timestamp_green > interval);
     timestamp_green = millis();
     toggleLEDGreen();
   }
-  PT_END(pt); // this signifies the start of the thread
+  PT_END(&pt2); // this signifies the start of the thread
 }
 
 // the super loop
 void loop() {
-  thread1_LedRed(&pt1, 100); // call the thread function, toggle Red Led every 100 ms
-  thread2_LedGreen(&pt2, 500); // call the thread function, toggle Green Led every 500 ms
+  thread1_LedRed(100); // call the thread function, toggle Red Led every 100 ms
+  thread2_LedGreen(500); // call the thread function, toggle Green Led every 500 ms
 }
